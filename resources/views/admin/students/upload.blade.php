@@ -20,8 +20,19 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.students.upload']) !!}
+                    {!! Form::open(['route' => 'admin.students.upload', 'files'=>'true']) !!}
 
+                    <div class="form-group col-sm-6">
+                        {!! Form::label('students', 'Select Student file:') !!}
+                        {!! Form::file('students') !!}
+                    </div>
+
+
+                    <!-- Submit Field -->
+                    <div class="form-group col-sm-12">
+                        {!! Form::submit('Upload', ['class' => 'btn btn-primary']) !!}
+                        <a href="{!! route('admin.students.index') !!}" class="btn btn-default">Cancel</a>
+                    </div>
 
                     {!! Form::close() !!}
                 </div>

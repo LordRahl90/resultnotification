@@ -74,7 +74,8 @@ Route::delete('admin/students/{students}', ['as'=> 'admin.students.destroy', 'us
 Route::get('admin/students/{students}', ['as'=> 'admin.students.show', 'uses' => 'Admin\StudentController@show']);
 Route::get('admin/students/{students}/edit', ['as'=> 'admin.students.edit', 'uses' => 'Admin\StudentController@edit']);
 
-Route::get('admin/students/upload',['as'=>'admin.students.upload','uses'=>'Admin\StudentController@showUpload']);
+Route::get('admin/upload/students',['as'=>'admin.students.show','uses'=>'Admin\StudentController@showUpload']);
+Route::post('admin/upload/students',['as'=>'admin.students.upload','uses'=>'Admin\StudentController@upload']);
 
 
 Route::get('admin/courses', ['as'=> 'admin.courses.index', 'uses' => 'Admin\CourseController@index']);

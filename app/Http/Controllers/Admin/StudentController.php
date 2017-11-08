@@ -8,6 +8,10 @@ use App\Repositories\Admin\StudentRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -156,7 +160,71 @@ class StudentController extends AppBaseController
 
 
     public function showUpload(){
-        dd("Hello WOrld");
         return view('admin.students.upload');
+    }
+
+
+    /**
+     * Manages the upload of the file
+     */
+    public function upload(){
+        $studentsList=Input::file('students');
+
+        if($studentsList==null){
+            Flash::error('Student not found');
+
+            return redirect(route('admin.students.index'));
+        }
+
+        $destination=time().'_'.$studentsList->getClientOriginalExtension();
+        $studentsList->move(public_path('students'),$destination);
+
+        return $this->loadToDataBase(public_path("students")."/".$destination);
+    }
+
+
+    public function loadToDataBase($file){
+        Excel::load($file, function($reader){
+            $results=$reader->get();
+
+            foreach ($results as $result){
+                $matric=$result->matric;
+                $surname=$result->surname;
+                $othernames=$result->othernames;
+                $email=$result->email;
+                $phone=$result->phone;
+
+                $data=$result->toArray();
+                $rules=[
+                    'matric'=>'required|unique:students,matric_no',
+                    'surname'=>'required',
+                    'othernames'=>'required',
+                    'email'=>'required|email|unique:students,email',
+                    'phone'=>'required|unique:students,phone'
+                ];
+
+                $v=Validator::make($data,$rules);
+
+                if($v->fails()){
+                    Log::info($v->messages()->all());
+                    continue;
+                }
+
+                $newStudent=$this->studentRepository->create([
+                    'matric_no'=>$matric,
+                    'surname'=>$surname,
+                    'other_names'=>$othernames,
+                    'email'=>$email,
+                    'phone'=>$phone
+                ]);
+
+                if(!$newStudent){
+                    $this->sendError("An error occurred");
+                }
+            }
+        });
+
+
+        dd("All records saved");
     }
 }
