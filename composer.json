@@ -9,6 +9,8 @@
         "antennaio/laravel-clyde": "^0.0.10",
         "cviebrock/eloquent-sluggable": "^4.3",
         "fideloper/proxy": "~3.3",
+        "infyomlabs/adminlte-templates": "5.5.x-dev",
+        "infyomlabs/laravel-generator": "5.5.x-dev",
         "laravel/framework": "5.5.*",
         "laravel/scout": "^3.0",
         "laravel/tinker": "~1.0",
@@ -17,7 +19,8 @@
         "maatwebsite/excel": "^2.1",
         "niklasravnsborg/laravel-pdf": "^1.5",
         "tamayo/laravel-scout-elastic": "^3.0",
-        "yohang88/letter-avatar": "^1.0"
+        "yohang88/letter-avatar": "^1.0",
+        "zizaco/entrust": "^1.8"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
