@@ -17,12 +17,10 @@ class CreateResultProcessingsTable extends Migration
             $table->increments('id');
             $table->integer('session_id')->unsigned();
             $table->integer('semester_id');
-            $table->integer('course_id')->unsigned();
             $table->integer('level_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('session_id')->references('id')->on('school_sessions');
-            $table->foreign('course_id')->references('id')->on('courses');
             $table->foreign('level_id')->references('id')->on('levels');
         });
     }

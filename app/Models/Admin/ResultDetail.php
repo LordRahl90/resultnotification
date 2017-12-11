@@ -27,6 +27,7 @@ class ResultDetail extends Model
     public $fillable = [
         'result_process_id',
         'student_id',
+        'course_id',
         'score'
     ];
 
@@ -52,5 +53,8 @@ class ResultDetail extends Model
         'score' => 'required'
     ];
 
+    public function course(){
+        return $this->hasOne('App\Models\Admin\Course','id','course_id');
+    }
     
 }

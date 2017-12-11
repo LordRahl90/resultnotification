@@ -28,7 +28,6 @@ class ResultProcessing extends Model
     public $fillable = [
         'session_id',
         'semester_id',
-        'course_id',
         'level_id'
     ];
 
@@ -40,7 +39,6 @@ class ResultProcessing extends Model
     protected $casts = [
         'session_id' => 'integer',
         'semester_id' => 'integer',
-        'course_id' => 'integer',
         'level_id' => 'integer'
     ];
 
@@ -55,6 +53,15 @@ class ResultProcessing extends Model
         'course_id' => 'required',
         'level_id' => 'required'
     ];
+
+
+    public function details(){
+        return $this->hasMany('App\Models\Admin\ResultDetail',"result_process_id","id");
+    }
+
+    public function course(){
+        return $this->hasOne('App\Models\Admin\Course','id','course_id');
+    }
 
     
 }

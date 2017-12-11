@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CreateResultProcessingRequest;
 use App\Http\Requests\Admin\UpdateResultProcessingRequest;
+use App\Jobs\SendNotification;
+use App\Mail\SendNotification as SendEmailNotification;
 use App\Models\Admin\ResultDetail;
+use App\Models\Admin\ResultProcessing;
+use App\Models\Admin\SchoolSession;
 use App\Models\Admin\Student;
 use App\Repositories\Admin\CourseRepository;
 use App\Repositories\Admin\LevelRepository;
@@ -16,6 +20,8 @@ use Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
@@ -266,18 +272,30 @@ class ResultProcessingController extends AppBaseController
         try{
             Excel::load($file, function($reader) use($resultProcessing){
 
-                //lets save the initial record to get the result processing id
-                $newRecord=$resultProcessing->create([
-                    "session_id"=>Input::get("session_id"),
-                    "semester_id"=>Input::get("semester_id"),
-                    "course_id"=>Input::get("course_id"),
-                    "level_id"=>Input::get("level_id")
-                ]);
+                $session_id=Input::get("session_id");
+                $semester_id=Input::get("semester_id");
+                $course_id=Input::get("course_id");
+                $level_id=Input::get("level_id");
 
-                if(!$newRecord){
-                    Flash::error("An error occurred");
-                    return redirect()->back();
+                //lets save the initial record to get the result processing id
+                $newRecord=$resultProcessing->findWhere(["session_id"=>$session_id,
+                    "semester_id"=>$semester_id]);
+
+                if(count($newRecord)<=0){
+                    $newRecord=$resultProcessing->create([
+                        "session_id"=>$session_id,
+                        "semester_id"=>$semester_id,
+                        "level_id"=>$level_id
+                    ]);
+
+                    if(!$newRecord){
+                        Flash::error("An error occurred");
+                        return redirect()->back();
+                    }
+                }else{
+                    $newRecord=$newRecord->first();
                 }
+
                 $results=$reader->get();
 
                 foreach ($results as $result){
@@ -289,6 +307,7 @@ class ResultProcessingController extends AppBaseController
                         $student_id=$studentInfo->first()->id;
                         $newResultDetail=ResultDetail::create([
                             "result_process_id"=>$newRecord->id,
+                            "course_id"=>$course_id,
                             "student_id"=>$student_id,
                             "score"=>$result->score
                         ]);
@@ -336,7 +355,106 @@ class ResultProcessingController extends AppBaseController
     }
 
 
-    public function process(){
-        dd(Input::all());
+    public function process(ResultProcessingRepository $resultProcessing){
+        $session=Input::get("session_id");
+        $semester_id=Input::get("semester_id");
+
+        $v=Validator::make([
+            "Session"=>$session,
+            "Semester"=>$semester_id
+        ],[
+            "Session"=>"required",
+            "Semester"=>"required"
+        ]);
+
+        if($semester_id==0 || $semester_id==""){
+            Flash::error("Please select a valid session");
+            return redirect()->back();
+        }
+
+        $sessionInfo=SchoolSession::find($session);
+        $semester=$semester_id==1?"First Semester":"Second Semester";
+
+
+        if($v->fails()){
+            Flash::error($v->messages()->all());
+            return redirect()->back();
+        }
+
+        //get all the occurrent of this session and semester
+        $session_id=Input::get("session_id");
+        $semester_id=Input::get("semester_id");
+
+        $processingInfo=$resultProcessing->findWhere(["session_id"=>$session_id,
+            "semester_id"=>$semester_id]);
+        if(count($processingInfo)<=0){
+            dd("Hello World!!");
+            return redirect()->back();
+        }
+        $processingInfo=$processingInfo->first();
+//        $details=DB::Raw("select distinct student_id from result_details");
+        $students=ResultDetail::distinct()->get(["student_id"]);
+        foreach ($students as $student){
+            $studentInfo=Student::find($student->student_id);
+            //lets get the details
+            $details=ResultDetail::whereRaw("result_process_id=? and student_id=?",
+                [$processingInfo->id,$student->student_id])->get();
+
+            $totalUnits=0;
+            $totalPoints=0;
+            foreach ($details as $detail){
+                $courseUnit=$detail->course->course_unit;
+                $totalUnits+=$courseUnit;
+                $totalPoints+=$this->getPoint($detail->score)*$courseUnit;
+            }
+
+            $gpa=$totalPoints/$totalUnits;
+            $msg="Dear $studentInfo->matric_no, your GPA for $sessionInfo->session_name session and $semester is: "
+                .number_format
+                ($gpa,2);
+            $email=$studentInfo->email;
+            Mail::raw([], function($message) use($msg,$email) {
+                $message->from('info@fpe-alert.com', 'FPE Notification');
+                $message->to($email);
+                $message->subject('Result Notification');
+                $message->setBody( $msg );
+            });
+
+//            $this->dispatchNow(new SendNotification($message,$studentInfo->phone));
+        }
+
+//        dd("Hello World... all done");
+        Flash::success("Notification sent to all students");
+        return redirect()->back();
+        //lets get all the students from this list
+    }
+
+    public function getPoint($score){
+        $point=0.00;
+        if($score>=75 && $score<=100){
+            $point=3.50;
+        }
+        else if($score>=70 && $score<75){
+            $point=3.00;
+        }else if($score>=65 && $score<70){
+            $point=2.75;
+        }
+        else if($score>=60 && $score<65){
+            $point=2.50;
+        }
+        else if($score>=55 && $score<60){
+            $point=2.00;
+        }
+        else if($score>=50 && $score<55){
+            $point=1.50;
+        }
+        else if($score>=40 && $score<50){
+            $point=1.00;
+        }
+        else if($score<40){
+            $point=0.00;
+        }
+
+        return $point;
     }
 }
