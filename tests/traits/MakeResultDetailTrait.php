@@ -42,7 +42,8 @@ trait MakeResultDetailTrait
         $fake = Faker::create();
 
         return array_merge([
-            'course_id' => $fake->randomDigitNotNull,
+            'result_process_id' => $fake->randomDigitNotNull,
+            'student_id' => $fake->randomDigitNotNull,
             'score' => $fake->randomDigitNotNull,
             'created_at' => $fake->word,
             'updated_at' => $fake->word

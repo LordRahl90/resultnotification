@@ -1,13 +1,19 @@
-<!-- Course Id Field -->
+<!-- Result Process Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('course_id', 'Course Id:') !!}
-    {!! Form::text('course_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('result_process_id', 'Result Process Id:') !!}
+    {!! Form::text('result_process_id', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Student Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('student_id', 'Student Id:') !!}
+    {!! Form::text('student_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Score Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('score', 'Score:') !!}
-    {!! Form::text('score', null, ['class' => 'form-control']) !!}
+    {!! Form::number('score', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->

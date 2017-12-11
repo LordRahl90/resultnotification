@@ -46,3 +46,7 @@
     <a href="{!! route('admin.users.index') !!}"><i class="fa fa-edit"></i><span>Users</span></a>
 </li>
 
+<li class="{{ Request::is('resultDetails*') ? 'active' : '' }}">
+    <a href="{!! route('admin.resultDetails.index') !!}"><i class="fa fa-edit"></i><span>Result Details</span></a>
+</li>
+

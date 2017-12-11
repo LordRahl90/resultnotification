@@ -42,9 +42,10 @@ trait MakeResultProcessingTrait
         $fake = Faker::create();
 
         return array_merge([
-            'student_id' => $fake->randomDigitNotNull,
             'session_id' => $fake->randomDigitNotNull,
-            'semester' => $fake->word,
+            'semester_id' => $fake->randomDigitNotNull,
+            'course_id' => $fake->randomDigitNotNull,
+            'level_id' => $fake->randomDigitNotNull,
             'created_at' => $fake->word,
             'updated_at' => $fake->word
         ], $resultProcessingFields);

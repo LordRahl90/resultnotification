@@ -1,18 +1,20 @@
 <table class="table table-responsive" id="resultProcessings-table">
     <thead>
         <tr>
-            <th>Student Id</th>
-        <th>Session Id</th>
-        <th>Semester</th>
+            <th>Session Id</th>
+        <th>Semester Id</th>
+        <th>Course Id</th>
+        <th>Level Id</th>
             <th colspan="3">Action</th>
         </tr>
     </thead>
     <tbody>
     @foreach($resultProcessings as $resultProcessing)
         <tr>
-            <td>{!! $resultProcessing->student_id !!}</td>
             <td>{!! $resultProcessing->session_id !!}</td>
-            <td>{!! $resultProcessing->semester !!}</td>
+            <td>{!! $resultProcessing->semester_id !!}</td>
+            <td>{!! $resultProcessing->course_id !!}</td>
+            <td>{!! $resultProcessing->level_id !!}</td>
             <td>
                 {!! Form::open(['route' => ['admin.resultProcessings.destroy', $resultProcessing->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>

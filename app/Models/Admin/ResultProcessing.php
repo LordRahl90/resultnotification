@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class ResultProcessing
  * @package App\Models\Admin
- * @version November 7, 2017, 10:11 pm UTC
+ * @version November 8, 2017, 4:05 pm UTC
  *
- * @property integer student_id
  * @property integer session_id
- * @property string semester
+ * @property integer semester_id
+ * @property integer course_id
+ * @property integer level_id
  */
 class ResultProcessing extends Model
 {
@@ -25,9 +26,10 @@ class ResultProcessing extends Model
 
 
     public $fillable = [
-        'student_id',
         'session_id',
-        'semester'
+        'semester_id',
+        'course_id',
+        'level_id'
     ];
 
     /**
@@ -36,9 +38,10 @@ class ResultProcessing extends Model
      * @var array
      */
     protected $casts = [
-        'student_id' => 'integer',
         'session_id' => 'integer',
-        'semester' => 'string'
+        'semester_id' => 'integer',
+        'course_id' => 'integer',
+        'level_id' => 'integer'
     ];
 
     /**
@@ -47,9 +50,10 @@ class ResultProcessing extends Model
      * @var array
      */
     public static $rules = [
-        'student_id' => 'required|numeric',
-        'session_id' => 'required|numeric',
-        'semester' => 'required'
+        'session_id' => 'required',
+        'semester_id' => 'course_id integer:unsigned:foreign,courses,id text',
+        'course_id' => 'required',
+        'level_id' => 'required'
     ];
 
     

@@ -97,6 +97,12 @@ Route::delete('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resu
 Route::get('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.show', 'uses' => 'Admin\ResultProcessingController@show']);
 Route::get('admin/resultProcessings/{resultProcessings}/edit', ['as'=> 'admin.resultProcessings.edit', 'uses' => 'Admin\ResultProcessingController@edit']);
 
+Route::get('admin/resultProcesssing/upload',['as'=>'admin.resultProcessings.show','uses'=>'Admin\ResultProcessingController@showUpload']);
+Route::post('admin/resultProcesssing/upload',['as'=>'admin.resultProcessings.upload','uses'=>'Admin\ResultProcessingController@upload']);
+Route::get('admin/resultProcesssing/process',['as'=>'admin.resultProcessings.process','uses'=>'Admin\ResultProcessingController@showProcess']);
+Route::post('admin/resultProcesssing/process',['as'=>'admin.resultProcessings.process','uses'=>'Admin\ResultProcessingController@process']);
+
+
 
 Route::get('admin/resultDetails', ['as'=> 'admin.resultDetails.index', 'uses' => 'Admin\ResultDetailController@index']);
 Route::post('admin/resultDetails', ['as'=> 'admin.resultDetails.store', 'uses' => 'Admin\ResultDetailController@store']);
@@ -116,3 +122,33 @@ Route::patch('admin/users/{users}', ['as'=> 'admin.users.update', 'uses' => 'Adm
 Route::delete('admin/users/{users}', ['as'=> 'admin.users.destroy', 'uses' => 'Admin\UserController@destroy']);
 Route::get('admin/users/{users}', ['as'=> 'admin.users.show', 'uses' => 'Admin\UserController@show']);
 Route::get('admin/users/{users}/edit', ['as'=> 'admin.users.edit', 'uses' => 'Admin\UserController@edit']);
+
+
+Route::get('admin/resultProcessings', ['as'=> 'admin.resultProcessings.index', 'uses' => 'Admin\ResultProcessingController@index']);
+Route::post('admin/resultProcessings', ['as'=> 'admin.resultProcessings.store', 'uses' => 'Admin\ResultProcessingController@store']);
+Route::get('admin/resultProcessings/create', ['as'=> 'admin.resultProcessings.create', 'uses' => 'Admin\ResultProcessingController@create']);
+Route::put('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.update', 'uses' => 'Admin\ResultProcessingController@update']);
+Route::patch('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.update', 'uses' => 'Admin\ResultProcessingController@update']);
+Route::delete('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.destroy', 'uses' => 'Admin\ResultProcessingController@destroy']);
+Route::get('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.show', 'uses' => 'Admin\ResultProcessingController@show']);
+Route::get('admin/resultProcessings/{resultProcessings}/edit', ['as'=> 'admin.resultProcessings.edit', 'uses' => 'Admin\ResultProcessingController@edit']);
+
+
+Route::get('admin/resultProcessings', ['as'=> 'admin.resultProcessings.index', 'uses' => 'Admin\ResultProcessingController@index']);
+Route::post('admin/resultProcessings', ['as'=> 'admin.resultProcessings.store', 'uses' => 'Admin\ResultProcessingController@store']);
+Route::get('admin/resultProcessings/create', ['as'=> 'admin.resultProcessings.create', 'uses' => 'Admin\ResultProcessingController@create']);
+Route::put('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.update', 'uses' => 'Admin\ResultProcessingController@update']);
+Route::patch('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.update', 'uses' => 'Admin\ResultProcessingController@update']);
+Route::delete('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.destroy', 'uses' => 'Admin\ResultProcessingController@destroy']);
+Route::get('admin/resultProcessings/{resultProcessings}', ['as'=> 'admin.resultProcessings.show', 'uses' => 'Admin\ResultProcessingController@show']);
+Route::get('admin/resultProcessings/{resultProcessings}/edit', ['as'=> 'admin.resultProcessings.edit', 'uses' => 'Admin\ResultProcessingController@edit']);
+
+
+Route::get('admin/resultDetails', ['as'=> 'admin.resultDetails.index', 'uses' => 'Admin\ResultDetailController@index']);
+Route::post('admin/resultDetails', ['as'=> 'admin.resultDetails.store', 'uses' => 'Admin\ResultDetailController@store']);
+Route::get('admin/resultDetails/create', ['as'=> 'admin.resultDetails.create', 'uses' => 'Admin\ResultDetailController@create']);
+Route::put('admin/resultDetails/{resultDetails}', ['as'=> 'admin.resultDetails.update', 'uses' => 'Admin\ResultDetailController@update']);
+Route::patch('admin/resultDetails/{resultDetails}', ['as'=> 'admin.resultDetails.update', 'uses' => 'Admin\ResultDetailController@update']);
+Route::delete('admin/resultDetails/{resultDetails}', ['as'=> 'admin.resultDetails.destroy', 'uses' => 'Admin\ResultDetailController@destroy']);
+Route::get('admin/resultDetails/{resultDetails}', ['as'=> 'admin.resultDetails.show', 'uses' => 'Admin\ResultDetailController@show']);
+Route::get('admin/resultDetails/{resultDetails}/edit', ['as'=> 'admin.resultDetails.edit', 'uses' => 'Admin\ResultDetailController@edit']);

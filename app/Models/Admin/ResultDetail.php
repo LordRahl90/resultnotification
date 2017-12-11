@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class ResultDetail
  * @package App\Models\Admin
- * @version November 7, 2017, 10:16 pm UTC
+ * @version November 8, 2017, 4:08 pm UTC
  *
- * @property integer course_id
+ * @property integer result_process_id
+ * @property integer student_id
  * @property integer score
  */
 class ResultDetail extends Model
@@ -24,7 +25,8 @@ class ResultDetail extends Model
 
 
     public $fillable = [
-        'course_id',
+        'result_process_id',
+        'student_id',
         'score'
     ];
 
@@ -34,7 +36,8 @@ class ResultDetail extends Model
      * @var array
      */
     protected $casts = [
-        'course_id' => 'integer',
+        'result_process_id' => 'integer',
+        'student_id' => 'integer',
         'score' => 'integer'
     ];
 
@@ -44,8 +47,9 @@ class ResultDetail extends Model
      * @var array
      */
     public static $rules = [
-        'course_id' => 'required',
-        'score' => 'exit'
+        'result_process_id' => 'required',
+        'student_id' => 'required',
+        'score' => 'required'
     ];
 
     

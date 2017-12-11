@@ -4,10 +4,16 @@
     <p>{!! $resultDetail->id !!}</p>
 </div>
 
-<!-- Course Id Field -->
+<!-- Result Process Id Field -->
 <div class="form-group">
-    {!! Form::label('course_id', 'Course Id:') !!}
-    <p>{!! $resultDetail->course_id !!}</p>
+    {!! Form::label('result_process_id', 'Result Process Id:') !!}
+    <p>{!! $resultDetail->result_process_id !!}</p>
+</div>
+
+<!-- Student Id Field -->
+<div class="form-group">
+    {!! Form::label('student_id', 'Student Id:') !!}
+    <p>{!! $resultDetail->student_id !!}</p>
 </div>
 
 <!-- Score Field -->

@@ -122,3 +122,24 @@ Route::get('admin/users/{users}', 'Admin\UserAPIController@show');
 Route::put('admin/users/{users}', 'Admin\UserAPIController@update');
 Route::patch('admin/users/{users}', 'Admin\UserAPIController@update');
 Route::delete('admin/users{users}', 'Admin\UserAPIController@destroy');
+
+Route::get('admin/result_processings', 'Admin\ResultProcessingAPIController@index');
+Route::post('admin/result_processings', 'Admin\ResultProcessingAPIController@store');
+Route::get('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@show');
+Route::put('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@update');
+Route::patch('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@update');
+Route::delete('admin/result_processings{result_processings}', 'Admin\ResultProcessingAPIController@destroy');
+
+Route::get('admin/result_processings', 'Admin\ResultProcessingAPIController@index');
+Route::post('admin/result_processings', 'Admin\ResultProcessingAPIController@store');
+Route::get('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@show');
+Route::put('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@update');
+Route::patch('admin/result_processings/{result_processings}', 'Admin\ResultProcessingAPIController@update');
+Route::delete('admin/result_processings{result_processings}', 'Admin\ResultProcessingAPIController@destroy');
+
+Route::get('admin/result_details', 'Admin\ResultDetailAPIController@index');
+Route::post('admin/result_details', 'Admin\ResultDetailAPIController@store');
+Route::get('admin/result_details/{result_details}', 'Admin\ResultDetailAPIController@show');
+Route::put('admin/result_details/{result_details}', 'Admin\ResultDetailAPIController@update');
+Route::patch('admin/result_details/{result_details}', 'Admin\ResultDetailAPIController@update');
+Route::delete('admin/result_details{result_details}', 'Admin\ResultDetailAPIController@destroy');

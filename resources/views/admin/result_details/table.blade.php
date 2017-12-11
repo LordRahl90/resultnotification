@@ -1,7 +1,8 @@
 <table class="table table-responsive" id="resultDetails-table">
     <thead>
         <tr>
-            <th>Course Id</th>
+            <th>Result Process Id</th>
+        <th>Student Id</th>
         <th>Score</th>
             <th colspan="3">Action</th>
         </tr>
@@ -9,7 +10,8 @@
     <tbody>
     @foreach($resultDetails as $resultDetail)
         <tr>
-            <td>{!! $resultDetail->course_id !!}</td>
+            <td>{!! $resultDetail->result_process_id !!}</td>
+            <td>{!! $resultDetail->student_id !!}</td>
             <td>{!! $resultDetail->score !!}</td>
             <td>
                 {!! Form::open(['route' => ['admin.resultDetails.destroy', $resultDetail->id], 'method' => 'delete']) !!}

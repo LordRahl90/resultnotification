@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class ResultDetailRepository
  * @package App\Repositories\Admin
- * @version November 7, 2017, 10:16 pm UTC
+ * @version November 8, 2017, 4:08 pm UTC
  *
  * @method ResultDetail findWithoutFail($id, $columns = ['*'])
  * @method ResultDetail find($id, $columns = ['*'])
@@ -20,7 +20,8 @@ class ResultDetailRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'course_id',
+        'result_process_id',
+        'student_id',
         'score'
     ];
 

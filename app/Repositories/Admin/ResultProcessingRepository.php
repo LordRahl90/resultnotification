@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class ResultProcessingRepository
  * @package App\Repositories\Admin
- * @version November 7, 2017, 10:11 pm UTC
+ * @version November 8, 2017, 4:05 pm UTC
  *
  * @method ResultProcessing findWithoutFail($id, $columns = ['*'])
  * @method ResultProcessing find($id, $columns = ['*'])
@@ -20,9 +20,10 @@ class ResultProcessingRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'student_id',
         'session_id',
-        'semester'
+        'semester_id',
+        'course_id',
+        'level_id'
     ];
 
     /**

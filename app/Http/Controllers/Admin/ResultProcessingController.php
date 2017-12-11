@@ -4,10 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CreateResultProcessingRequest;
 use App\Http\Requests\Admin\UpdateResultProcessingRequest;
+use App\Models\Admin\ResultDetail;
+use App\Models\Admin\Student;
+use App\Repositories\Admin\CourseRepository;
+use App\Repositories\Admin\LevelRepository;
 use App\Repositories\Admin\ResultProcessingRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Repositories\Admin\SchoolSessionRepository;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -39,11 +48,50 @@ class ResultProcessingController extends AppBaseController
     /**
      * Show the form for creating a new ResultProcessing.
      *
+     * @param SchoolSessionRepository $schoolSession
+     * @param LevelRepository $levelRepository
+     *
      * @return Response
      */
-    public function create()
+    public function create(
+        SchoolSessionRepository $schoolSession,
+        LevelRepository $levelRepository,
+        CourseRepository $courseRepository
+    )
     {
-        return view('admin.result_processings.create');
+        $semester=[
+          ""=>"Select Semester",
+          "1"=>"First Semester",
+          "2"=>"Second Semester"
+        ];
+
+        $sessionArray=[""=>"Select Session"];
+        $allSessions=$schoolSession->all();
+        foreach ($allSessions as $session){
+            $sessionArray[$session->id]=$session->session_name;
+        }
+
+        $levelArray=[
+            ""=>"Select Level"
+        ];
+
+        $allLevels=$levelRepository->all();
+        foreach ($allLevels as $level){
+            $levelArray[$level->id]=$level->level;
+        }
+
+        $courseArray=[""=>"Select Course"];
+        $courses=$courseRepository->all();
+        foreach ($courses as $course){
+            $courseArray[$course->id]=$course->course_name;
+        }
+
+        return view('admin.result_processings.create',[
+            "semesters"=>$semester,
+            "schoolSessions"=>$sessionArray,
+            "levels"=>$levelArray,
+            "courses"=>$courseArray
+        ]);
     }
 
     /**
@@ -151,5 +199,144 @@ class ResultProcessingController extends AppBaseController
         Flash::success('Result Processing deleted successfully.');
 
         return redirect(route('admin.resultProcessings.index'));
+    }
+
+
+    public function showUpload(
+        SchoolSessionRepository $schoolSession,
+        LevelRepository $levelRepository,
+        CourseRepository $courseRepository
+    ){
+
+        $semester=[
+            ""=>"Select Semester",
+            "1"=>"First Semester",
+            "2"=>"Second Semester"
+        ];
+
+        $sessionArray=[""=>"Select Session"];
+        $allSessions=$schoolSession->all();
+        foreach ($allSessions as $session){
+            $sessionArray[$session->id]=$session->session_name;
+        }
+
+        $levelArray=[
+            ""=>"Select Level"
+        ];
+
+        $allLevels=$levelRepository->all();
+        foreach ($allLevels as $level){
+            $levelArray[$level->id]=$level->level;
+        }
+
+        $courseArray=[""=>"Select Course"];
+        $courses=$courseRepository->all();
+        foreach ($courses as $course){
+            $courseArray[$course->id]=$course->course_name;
+        }
+
+        return view('admin.result_processings.upload',[
+            "semester"=>$semester,
+            "sessions"=>$sessionArray,
+            "levels"=>$levelArray,
+            "courses"=>$courseArray
+        ]);
+    }
+
+
+    public function upload(ResultProcessingRepository $resultProcessing){
+        $data=Input::all();
+
+        $scores=Input::file("scores");
+
+        if($scores==null){
+            Flash::error('Student not found');
+            return redirect(route('admin.students.index'));
+        }
+
+        $destination=time().'_'.$scores->getClientOriginalExtension();
+        $scores->move(public_path('students'),$destination);
+
+        Log::info("File Uploaded Successfully");
+        return $this->loadToDataBase(public_path("students")."/".$destination,$resultProcessing);
+    }
+
+    public function loadToDataBase($file, ResultProcessingRepository $resultProcessing){
+        DB::beginTransaction();
+        try{
+            Excel::load($file, function($reader) use($resultProcessing){
+
+                //lets save the initial record to get the result processing id
+                $newRecord=$resultProcessing->create([
+                    "session_id"=>Input::get("session_id"),
+                    "semester_id"=>Input::get("semester_id"),
+                    "course_id"=>Input::get("course_id"),
+                    "level_id"=>Input::get("level_id")
+                ]);
+
+                if(!$newRecord){
+                    Flash::error("An error occurred");
+                    return redirect()->back();
+                }
+                $results=$reader->get();
+
+                foreach ($results as $result){
+
+                    $studentInfo=Student::where("matric_no","=",$result->matric)->get();
+
+                    if($studentInfo!=null){
+
+                        $student_id=$studentInfo->first()->id;
+                        $newResultDetail=ResultDetail::create([
+                            "result_process_id"=>$newRecord->id,
+                            "student_id"=>$student_id,
+                            "score"=>$result->score
+                        ]);
+
+                        if(!$newResultDetail){
+                            Log::info("Cannot create a new result record");
+                        }
+                    }
+
+                }
+            });
+
+
+            DB::commit();
+            Flash::success("All records uploaded successfully!!");
+            return redirect()->back();
+
+        }
+        catch(\Exception $ex){
+            DB::rollBack();
+            Log::info($ex);
+            Flash::error("An error occurred");
+            dd("An error occurred");
+//            return redirect()->back();
+        }
+    }
+
+    public function showProcess(SchoolSessionRepository $schoolSession){
+        $sessionArray=[""=>"Select Session"];
+        $allSessions=$schoolSession->all();
+        foreach ($allSessions as $session){
+            $sessionArray[$session->id]=$session->session_name;
+        }
+
+        $semester=[
+            ""=>"Select Semester",
+            "1"=>"First Semester",
+            "2"=>"Second Semester"
+        ];
+
+        return view("admin.result_processings.process",[
+            "sessions"=>$sessionArray,
+            "semester"=>$semester
+        ]);
+    }
+
+
+    public function process(){
+        dd(Input::all());
     }
 }

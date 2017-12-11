@@ -223,8 +223,7 @@ class StudentController extends AppBaseController
                 }
             }
         });
-
-
-        dd("All records saved");
+        Flash::success("Students Upload Completed Successfully!!");
+        return redirect(route('admin.students.index'));
     }
 }

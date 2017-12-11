@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateResultProcessingsTable extends Migration
+class CreateResultDetailsTable extends Migration
 {
 
     /**
@@ -13,15 +13,15 @@ class CreateResultProcessingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('result_processings', function (Blueprint $table) {
+        Schema::create('result_details', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('result_process_id')->unsigned();
             $table->integer('student_id')->unsigned();
-            $table->integer('session_id')->unsigned();
-            $table->string('semester');
+            $table->integer('score');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('result_process_id')->references('id')->on('result_processings');
             $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('session_id')->references('id')->on('school_sessions');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateResultProcessingsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('result_processings');
+        Schema::drop('result_details');
     }
 }
