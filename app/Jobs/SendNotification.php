@@ -42,7 +42,6 @@ class SendNotification implements ShouldQueue
         $sender="RESULT";
         $message=$this->message;
 
-
         $client=new Client();
         $loginUrl="http://www.smslive247.com/http/index.aspx?cmd=login&owneremail=$owneremail&subacct=$subacct&subacctpwd=$subacctpwd";
         $loginResponse=$client->request('GET',$loginUrl);
