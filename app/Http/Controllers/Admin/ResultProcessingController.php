@@ -420,10 +420,10 @@ class ResultProcessingController extends AppBaseController
                 $message->setBody( $msg );
             });
 
-//            $this->dispatchNow(new SendNotification($message,$studentInfo->phone));
+            $this->dispatchNow(new SendNotification($msg,$studentInfo->phone));
         }
 
-//        dd("Hello World... all done");
+        dd("Hello World... all done");
         Flash::success("Notification sent to all students");
         return redirect()->back();
         //lets get all the students from this list

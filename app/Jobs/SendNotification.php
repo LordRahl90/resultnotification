@@ -38,39 +38,35 @@ class SendNotification implements ShouldQueue
         $owneremail="tolaabbey001@hotmail.com";
         $subacct="FPEALERT";
         $subacctpwd="fabregas";
-        $sendto="08155126203";
+        $sendto=$this->phone;
         $sender="RESULT";
-        $message="This is a test";
+        $message=$this->message;
 
 
         $client=new Client();
         $loginUrl="http://www.smslive247.com/http/index.aspx?cmd=login&owneremail=$owneremail&subacct=$subacct&subacctpwd=$subacctpwd";
         $loginResponse=$client->request('GET',$loginUrl);
 
-        dd($loginResponse->getBody()->getContents());
+        $responseContent=$loginResponse->getBody()->getContents();
 
+        $status=substr($responseContent,0,2);
 
-//        $url="http://www.smslive247.com/http/index.aspx?cmd=sendquickmsg&owneremail=$owneremail
-//         &subacct=$subacct&subacctpwd=$subacctpwd&message=$message&sender=$sender&sendto=$sendto&msgtype=0";
+        if($status!="OK"){
+            Log::info("An error occurred while attempting to login");
+            return;
+        }
+        $sessionId=substr($responseContent,4,strlen($responseContent));
 
+        $url="http://www.smslive247.com/http/index.aspx?cmd=sendmsg&sessionid=$sessionId&message=$message &sender=$sender&sendto=$sendto&msgtype=0";
         $client=new Client();
         $response=$client->request('GET',$url);
-        Log::info($response->getBody()->getContents());
+        $messageContent=$response->getBody()->getContents();
+        $messageStatus=substr($messageContent,0,2);
+        if($messageStatus!="OK"){
+            Log::info("An error occurred while sending the SMS to ".$sendto);
+            return;
+        }
 
-//        if ($f = @fopen($url, "r")) {
-//            $answer = fgets($f, 255);
-//            if (substr($answer, 0, 1) == "+") {
-//                Log::info("SMS to $sendto was successful.");
-//            } else {
-//                Log::info("an error has occurred: [$answer].");
-//            }
-//        }
-//        else{
-//            Log::info("Error: URL could not be opened.");
-//        }
-
-        Log::info($this->phone);
-        Log::info($this->message);
-        Log::info("Process done!!");
+        Log::info("Message Sent Successfully to ".$sendto);
     }
 }
